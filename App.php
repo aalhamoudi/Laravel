@@ -28,9 +28,9 @@ class Application extends \Illuminate\Foundation\Application
 
     // Dirs
     protected $baseDir = '/';
-    protected $environmentDir = '/';
-    protected $configDir = '/Config';
     protected $appDir = '/App';
+    protected $configDir = '/App/Config';
+    protected $environmentDir = '/App/Config';
 
     protected $bootstrapDir = '/Transient';
     protected $storageDir = '/Transient/Storage';
@@ -47,9 +47,9 @@ class Application extends \Illuminate\Foundation\Application
     {
         parent::__construct($base);
         $paths = [
-            'environment' => '/',
-            'config' => '/Config',
             'app' => '/App',
+            'config' => '/App/Config',
+            'environment' => '/App/Config',
             'resource' => '/Resources',
             'public' => '/Resources/Public',
             'lang' => '/Resources/Languages',
@@ -89,7 +89,12 @@ class Application extends \Illuminate\Foundation\Application
 
     public function configPath($path = '')
     {
-        return ($this->configPath ?? $this->basePath . DIRECTORY_SEPARATOR . 'Config') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+        return ($this->configPath ?? $this->basePath . DIRECTORY_SEPARATOR . '/App/Config') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+    }
+
+    public function environmentPath()
+    {
+        return $this->environmentPath ?: $this->basePath . '/App/Config';
     }
 
 
