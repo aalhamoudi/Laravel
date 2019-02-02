@@ -3,20 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="7676c568-0fa9-40ca-8d89-6d8624deaf83" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/App.php" beforeDir="false" afterPath="$PROJECT_DIR$/App.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/app.php" beforeDir="false" afterPath="$PROJECT_DIR$/App/Config/app.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/auth.php" beforeDir="false" afterPath="$PROJECT_DIR$/App/Config/auth.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/broadcasting.php" beforeDir="false" afterPath="$PROJECT_DIR$/App/Config/broadcasting.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/cache.php" beforeDir="false" afterPath="$PROJECT_DIR$/App/Config/cache.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/database.php" beforeDir="false" afterPath="$PROJECT_DIR$/App/Config/database.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/filesystems.php" beforeDir="false" afterPath="$PROJECT_DIR$/App/Config/filesystems.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/hashing.php" beforeDir="false" afterPath="$PROJECT_DIR$/App/Config/hashing.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/logging.php" beforeDir="false" afterPath="$PROJECT_DIR$/App/Config/logging.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/mail.php" beforeDir="false" afterPath="$PROJECT_DIR$/App/Config/mail.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/queue.php" beforeDir="false" afterPath="$PROJECT_DIR$/App/Config/queue.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/services.php" beforeDir="false" afterPath="$PROJECT_DIR$/App/Config/services.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/session.php" beforeDir="false" afterPath="$PROJECT_DIR$/App/Config/session.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Config/view.php" beforeDir="false" afterPath="$PROJECT_DIR$/App/Config/view.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Transient/Storage/logs/laravel-2019-02-02.log" beforeDir="false" afterPath="$PROJECT_DIR$/Transient/Storage/logs/laravel-2019-02-02.log" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -32,12 +18,14 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/App.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="299">
-              <caret line="96" column="71" selection-start-line="96" selection-start-column="71" selection-end-line="96" selection-end-column="71" />
+            <state relative-caret-position="345">
+              <caret line="69" column="24" selection-start-line="69" selection-start-column="24" selection-end-line="69" selection-end-column="24" />
               <folding>
                 <element signature="e#32#48#0#PHP" expanded="true" />
                 <element signature="n#basePath#0;n#Application#0;n#!!top" />
                 <element signature="n#bootstrapPath#0;n#Application#0;n#!!top" />
+                <element signature="n#configPath#0;n#Application#0;n#!!top" />
+                <element signature="n#environmentPath#0;n#Application#0;n#!!top" />
                 <element signature="n#publicPath#0;n#Application#0;n#!!top" />
                 <element signature="n#resourcePath#0;n#Application#0;n#!!top" />
                 <element signature="n#langPath#0;n#Application#0;n#!!top" />
@@ -310,23 +298,23 @@
       <option name="presentableId" value="Default" />
       <updated>1549060125362</updated>
       <workItem from="1549060126556" duration="13048000" />
-      <workItem from="1549107307034" duration="4881000" />
+      <workItem from="1549107307034" duration="5251000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="17929000" />
+    <option name="totallyTimeSpent" value="18299000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="29" width="1936" height="1017" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.17625134" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.17625134" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32868758" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32868758" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -334,7 +322,7 @@
       <window_info anchor="bottom" id="Docker" order="7" />
       <window_info anchor="bottom" id="Database Changes" order="8" />
       <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info anchor="bottom" id="Terminal" order="10" weight="0.32868758" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.32868758" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -586,12 +574,14 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/App.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
-          <caret line="96" column="71" selection-start-line="96" selection-start-column="71" selection-end-line="96" selection-end-column="71" />
+        <state relative-caret-position="345">
+          <caret line="69" column="24" selection-start-line="69" selection-start-column="24" selection-end-line="69" selection-end-column="24" />
           <folding>
             <element signature="e#32#48#0#PHP" expanded="true" />
             <element signature="n#basePath#0;n#Application#0;n#!!top" />
             <element signature="n#bootstrapPath#0;n#Application#0;n#!!top" />
+            <element signature="n#configPath#0;n#Application#0;n#!!top" />
+            <element signature="n#environmentPath#0;n#Application#0;n#!!top" />
             <element signature="n#publicPath#0;n#Application#0;n#!!top" />
             <element signature="n#resourcePath#0;n#Application#0;n#!!top" />
             <element signature="n#langPath#0;n#Application#0;n#!!top" />

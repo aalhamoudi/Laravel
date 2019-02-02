@@ -67,7 +67,7 @@ class Application extends \Illuminate\Foundation\Application
 
     public function SetPath($target, $path = ''): Application
     {
-        $path = $this->basePath . ($path ?? $this[$target . 'Dir']);
+        $path = $path?? $this->basePath . ($target ?? $this[$target . 'Dir']);
         $this[$target . 'Path'] = $path;
 
         if ($target !== 'environment')
