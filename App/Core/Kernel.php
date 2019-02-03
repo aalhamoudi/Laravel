@@ -1,5 +1,5 @@
 <?php
-namespace App;
+namespace App\Core;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Foundation\Http\Middleware\ValidatePostSize;

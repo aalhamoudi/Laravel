@@ -9,6 +9,7 @@ class ConfigCacheCommand extends ConfigCache
 {
     public function getFreshConfiguration()
     {
+        /** @var App $app */
         $app = App::App();
         $app->make(Kernel::class);
 

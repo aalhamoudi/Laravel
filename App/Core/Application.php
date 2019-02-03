@@ -1,7 +1,12 @@
 <?php
 namespace App;
 
-if ($mode = 'Laravel')
+try { (new \Dotenv\Dotenv(__DIR__ . '/../Config'))->load(); }
+catch (\Dotenv\Exception\InvalidPathException $e) {}
+
+$mode = env('APP_MODE', 'Lumen');
+
+if ($mode === 'Laravel')
     class_alias(\Illuminate\Foundation\Application::class, Laravel::class);
 else
     class_alias(\Laravel\Lumen\Application::class, Laravel::class);
@@ -14,8 +19,6 @@ function Merge(&$inner, &$outer)
         return $inner = $outer = array_merge($inner, $outer);
 }
 
-try { (new \Dotenv\Dotenv(dirname(__DIR__)))->load(); }
-catch (\Dotenv\Exception\InvalidPathException $e) {}
 
 
 class Application extends Laravel
@@ -73,6 +76,7 @@ class Application extends Laravel
     ];
 
     protected $singletons = [
+        \Illuminate\Contracts\Http\Kernel::class => \App\Core\Kernel::class,
         \Illuminate\Contracts\Debug\ExceptionHandler::class => \App\Exceptions\Handler::class,
         \Illuminate\Contracts\Console\Kernel::class => Console::class
     ];
@@ -89,35 +93,24 @@ class Application extends Laravel
     public function __construct($base = '', $paths = [], $singletons = [], $providers = [], $middlewares = [])
     {
         parent::__construct($base);
+        global $mode;
 
-        if (count($paths))
-            $paths = $this->paths = array_merge($this->paths, $paths);
-
-        foreach ($paths as $name => $path)
-            $this->SetPath($name);
-
-        // Lument
-        $this->withFacades();
-        $this->withEloquent();
-
+        Merge($this->paths, $paths);
         Merge($this->singletons, $singletons);
         Merge($this->providers, $providers);
         Merge($this->middlewares, $middlewares);
 
-        foreach ($this->singletons as $abstract => $concrete)
-            $this->singleton($abstract, $concrete);
+        foreach ($paths as $name => $path)
+            $this->SetPath($name);
 
-        foreach ($this->providers as $provider)
-            $this->register($provider);
 
-        foreach ($this->middlewares as $middleware)
-            $this->middleware($middleware);
-
-        foreach ($this->routeMiddlewares as $routeMiddleware)
-            $this->routeMiddleware($routeMiddleware);
-
-        $this->router->group(['namespace' => 'App\Controllers'], function($router) {require __DIR__.'/Routes/web.php'; });
-
+        if ($mode === 'Lumen') {
+            $this->withFacades();
+            $this->withEloquent();
+            foreach ($this->routeMiddlewares as $routeMiddleware)
+                $this->routeMiddleware($routeMiddleware);
+            $this->router->group(['namespace' => 'App\Controllers'], function($router) {require __DIR__.'/../Routes/Lumen.php'; });
+        }
     }
 
     public function SetPath($target, $path = ''): Application
@@ -130,6 +123,34 @@ class Application extends Laravel
 
         return $this;
     }
+
+    public function Init()
+    {
+        $this->Singletons();
+        $this->Providers();
+        $this->Middlewares();
+
+        return $this;
+    }
+
+    public function Singletons()
+    {
+        foreach ($this->singletons as $abstract => $concrete)
+            $this->singleton($abstract, $concrete);
+    }
+
+    public function Providers()
+    {
+        foreach ($this->providers as $provider)
+            $this->register($provider);
+    }
+
+    public function Middlewares()
+    {
+        foreach ($this->middlewares as $middleware)
+            $this->middleware($middleware);
+    }
+
 
     // App
     public function basePath($path = '')
@@ -246,16 +267,12 @@ class Application extends Laravel
         throw new RuntimeException('Unable to detect application namespace.');
     }
 
-    public static function App($base, $singletons = [], $providers = [], $middlewares = [])
+    public static function App($base = __DIR__ . '/../../', $paths = [], $singletons = [], $providers = [], $middlewares = [])
     {
         $app = static::$app;
         if (!isset($app) || $app === null)
-            $app = static::$app = new static($base, $singletons, $providers, $middlewares);
+            $app = static::$app = new static($base, $paths, $singletons, $providers, $middlewares);
 
-        $app->singleton(\Illuminate\Contracts\Http\Kernel::class, \App\Kernel::class);
-        $app->singleton(\Illuminate\Contracts\Console\Kernel::class, \App\Console::class);
-        $app->singleton(\Illuminate\Contracts\Debug\ExceptionHandler::class, \App\Handler::class);
-
-        return $app;
+        return $app->Init();
     }
 }
