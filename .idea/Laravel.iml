@@ -3,6 +3,9 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/App" isTestSource="false" packagePrefix="App\" />
+      <excludeFolder url="file://$MODULE_DIR$/Vendor/laravel/lumen" />
+      <excludeFolder url="file://$MODULE_DIR$/Vendor/laravel/lumen-framework" />
+      <excludeFolder url="file://$MODULE_DIR$/Vendor/nikic/fast-route" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

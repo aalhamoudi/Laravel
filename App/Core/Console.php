@@ -2,9 +2,15 @@
 namespace App;
 
 use Illuminate\Console\Scheduling\Schedule;
-use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 use App\Commands\ConfigCacheCommand;
+
+
+if ($mode = 'Laravel')
+    class_alias(\Illuminate\Foundation\Console\Kernel::class, ConsoleKernel::class);
+else
+    class_alias(\Laravel\Lumen\Console\Kernel::class, ConsoleKernel::class);
+
 
 class Console extends ConsoleKernel
 {

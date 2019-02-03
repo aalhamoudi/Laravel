@@ -2,7 +2,11 @@
 
 namespace App\Middleware;
 
+use Closure;
 use Illuminate\Auth\Middleware\Authenticate as Middleware;
+
+use Illuminate\Contracts\Auth\Factory as Auth;
+
 
 class Authenticate extends Middleware
 {
@@ -17,5 +21,26 @@ class Authenticate extends Middleware
         if (! $request->expectsJson()) {
             return route('login');
         }
+    }
+}
+
+
+class Authenticate
+{
+
+    protected $auth;
+
+    public function __construct(Auth $auth)
+    {
+        $this->auth = $auth;
+    }
+
+    public function handle($request, Closure $next, $guard = null)
+    {
+        if ($this->auth->guard($guard)->guest()) {
+            return response('Unauthorized.', 401);
+        }
+
+        return $next($request);
     }
 }

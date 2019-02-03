@@ -1,12 +1,27 @@
 <?php
 namespace App;
 
-use Illuminate\Foundation\Application as Laravel;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Session\FileSessionHandler;
+if ($mode = 'Laravel')
+    class_alias(\Illuminate\Foundation\Application::class, Laravel::class);
+else
+    class_alias(\Laravel\Lumen\Application::class, Laravel::class);
+
+function Merge(&$inner, &$outer)
+{
+    if (!count($outer))
+        return $inner;
+    else
+        return $inner = $outer = array_merge($inner, $outer);
+}
+
+try { (new \Dotenv\Dotenv(dirname(__DIR__)))->load(); }
+catch (\Dotenv\Exception\InvalidPathException $e) {}
+
 
 class Application extends Laravel
 {
+    protected static $app;
+
     protected $namespace;
 
     protected $basePath;
@@ -47,9 +62,9 @@ class Application extends Laravel
         'config' => '/App/Config',
         'environment' => '/App/Config',
 
-        'resource' => '/Resources',
-        'public' => '/Resources/Public',
-        'lang' => '/Resources/Languages',
+        'public' => '/App/Public',
+        'resource' => '/App/Resources',
+        'lang' => '/App/Resources/Languages',
 
         'bootstrap' => '/Transient',
         'storage' => '/Transient/Storage',
@@ -57,7 +72,21 @@ class Application extends Laravel
         'database' => '/Transient/Database'
     ];
 
-    public function __construct($base = '', $paths = [])
+    protected $singletons = [
+        \Illuminate\Contracts\Debug\ExceptionHandler::class => \App\Exceptions\Handler::class,
+        \Illuminate\Contracts\Console\Kernel::class => Console::class
+    ];
+    protected $providers = [
+        \App\Providers\AppServiceProvider::class,
+        \App\Providers\AuthServiceProvider::class,
+        \App\Providers\EventServiceProvider::class
+    ];
+    protected $middlewares = [];
+    protected $routeMiddlewares = [
+        ['auth' => \App\Middleware\Authenticate::class]
+    ];
+
+    public function __construct($base = '', $paths = [], $singletons = [], $providers = [], $middlewares = [])
     {
         parent::__construct($base);
 
@@ -67,7 +96,28 @@ class Application extends Laravel
         foreach ($paths as $name => $path)
             $this->SetPath($name);
 
-//        $this->bind('path.public', function () {return base_path() . '/Public'; });
+        // Lument
+        $this->withFacades();
+        $this->withEloquent();
+
+        Merge($this->singletons, $singletons);
+        Merge($this->providers, $providers);
+        Merge($this->middlewares, $middlewares);
+
+        foreach ($this->singletons as $abstract => $concrete)
+            $this->singleton($abstract, $concrete);
+
+        foreach ($this->providers as $provider)
+            $this->register($provider);
+
+        foreach ($this->middlewares as $middleware)
+            $this->middleware($middleware);
+
+        foreach ($this->routeMiddlewares as $routeMiddleware)
+            $this->routeMiddleware($routeMiddleware);
+
+        $this->router->group(['namespace' => 'App\Controllers'], function($router) {require __DIR__.'/Routes/web.php'; });
+
     }
 
     public function SetPath($target, $path = ''): Application
@@ -84,6 +134,15 @@ class Application extends Laravel
     // App
     public function basePath($path = '')
     {
+        if (isset($this->basePath))
+            return $this->basePath.($path ? '/'.$path : $path);
+
+
+        if ($this->runningInConsole())
+            $this->basePath = getcwd();
+        else
+            $this->basePath = realpath(getcwd().'/../');
+
         return $this->basePath . ($path ? DIRECTORY_SEPARATOR . $path : '');
     }
 
@@ -92,9 +151,17 @@ class Application extends Laravel
         return ($this->bootstrapPath ?: $this->basePath . $this->bootstrapDir) . ($path ? DIRECTORY_SEPARATOR . $path : '');
     }
 
-    public function configPath($path = '')
+    public function configPath($name = '')
     {
-        return ($this->configPath ?: $this->basePath . DIRECTORY_SEPARATOR . '/App/Config') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+        $configPath = $this->configPath ?: $this->basePath . DIRECTORY_SEPARATOR . '/App/Config' ;
+        $resolvedPath = $configPath . ($name ? DIRECTORY_SEPARATOR . $name : $name);
+
+        return $resolvedPath;
+    }
+
+    public function getConfigurationPath($name = null)
+    {
+        return $this->configPath($name);
     }
 
     public function environmentPath()
@@ -105,6 +172,11 @@ class Application extends Laravel
     public function storagePath()
     {
         return $this->storagePath ?: $this->bootstrapPath() . DIRECTORY_SEPARATOR . 'Storage';
+    }
+
+    public function databasePath($path = '')
+    {
+        return $this->basePath.DIRECTORY_SEPARATOR.'database'.($path ? DIRECTORY_SEPARATOR.$path : $path);
     }
 
     // Resources
@@ -122,6 +194,15 @@ class Application extends Laravel
     {
         echo $this->resourcePath;
         return $this->langPath ?: $this->resourcePath() . DIRECTORY_SEPARATOR . 'Languages';
+    }
+
+    protected function getLanguagePath()
+    {
+        if (is_dir($langPath = $this->basePath().'/resources/lang'))
+            return $langPath;
+        else
+            return __DIR__.'/../resources/lang';
+
     }
 
 
@@ -163,5 +244,18 @@ class Application extends Laravel
         }
 
         throw new RuntimeException('Unable to detect application namespace.');
+    }
+
+    public static function App($base, $singletons = [], $providers = [], $middlewares = [])
+    {
+        $app = static::$app;
+        if (!isset($app) || $app === null)
+            $app = static::$app = new static($base, $singletons, $providers, $middlewares);
+
+        $app->singleton(\Illuminate\Contracts\Http\Kernel::class, \App\Kernel::class);
+        $app->singleton(\Illuminate\Contracts\Console\Kernel::class, \App\Console::class);
+        $app->singleton(\Illuminate\Contracts\Debug\ExceptionHandler::class, \App\Handler::class);
+
+        return $app;
     }
 }
